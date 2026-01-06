@@ -1,10 +1,6 @@
-console.log(document);
-
 function getElement(id){
-    const element = document.getElementById(id);
-    return element;
+    return document.getElementById(id);
 }
-
 
 document.addEventListener("click", function (e) {
   if (e.target.className.includes("fa-heart")) {
@@ -13,22 +9,15 @@ document.addEventListener("click", function (e) {
   }
 });
 
-//  copy count
 document.addEventListener("click", function (e) {
   const copyBtn = e.target.closest(".copy-btn");
-
   if (copyBtn) {
-   
     alert("copied successfully!");
-
-    // 2️⃣ Increase copy count
     const copyCountEl = getElement("copy-count");
-    const copyCount = Number(copyCountEl.innerText);
-    copyCountEl.innerText = copyCount + 1;
+    copyCountEl.innerText = Number(copyCountEl.innerText) + 1;
   }
 });
 
-//copy hotline Number
 document.addEventListener("click", function (e) {
   if (e.target.classList.contains("hotline-number")) {
     const number = e.target.innerText;
@@ -37,49 +26,40 @@ document.addEventListener("click", function (e) {
   }
 });
 
-
-
 document.addEventListener("click", function (e) {
   if (e.target.className.includes("call-btn")) {
-    const callBtn = e.target;
-
-    // card reference
-    const card = callBtn.parentNode.parentNode;
-
-    // service info
-    const serviceName = card.children[1].children[0].innerText;
-    const serviceNumber = card.children[1].children[2].innerText;
-
-    // coin
+    const card = e.target.closest(".bg-white");
+    const serviceName = card.querySelector("h2").innerText;
+    const serviceNumber = card.querySelector(".hotline-number").innerText;
     let coins = Number(getElement("coin-count").innerText);
-
-    // validation
     if (coins < 20) {
       alert("❌ You don't have enough coins to make a call");
       return;
     }
-    alert(`📞 Calling ${serviceName}\nNumber: ${serviceNumber}`);
-
-    // cut coin
-    coins = coins - 20;
+    coins -= 20;
     getElement("coin-count").innerText = coins;
-
-    // add to call history
+    alert(`📞 Calling ${serviceName}\nNumber: ${serviceNumber}`);
+    const now = new Date();
+    const localTime = now.toLocaleString();
     const historyContainer = getElement("call-history");
-
     const historyItem = document.createElement("div");
+    historyItem.classList.add("bg-gray-100", "rounded-xl", "p-3");
     historyItem.innerHTML = `
-      <div class="bg-gray-100 rounded-xl p-3">
-        <h3 class="font-bold">${serviceName}</h3>
-        <p class="text-sm">${serviceNumber}</p>
-      </div>
+     <div class='flex justify-between gap-3 p-3'> 
+    <div>
+    <h3 class="font-bold">${serviceName}</h3>
+    <p class="text-sm">${serviceNumber}</p>
+    </div>
+    <div> 
+    <p class="text-s opacity-70 font-bold">${new Date().toLocaleTimeString()}</p>
+    </div>
+    </div>
+      
     `;
-
-    historyContainer.append(historyItem);
+    historyContainer.appendChild(historyItem);
   }
 });
 
-// History Clear
 getElement("clear-history").addEventListener("click", function () {
   getElement("call-history").innerHTML = "";
 });
